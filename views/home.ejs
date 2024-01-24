@@ -1,0 +1,78 @@
+<!-- student_dashboard.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Dashboard</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="logo"> <!-- Add your college logo here --></div>
+    <div class="welcome-text">Welcome <%= studentRollNumber %></div>
+  </nav>
+
+  <!-- Body -->
+  <div class="dashboard-container">
+    <!-- Display student information -->
+    <div class="student-info">
+      <h2>Student Information</h2>
+      <p>Name: <%= studentName %></p>
+      <p>Roll Number: <%= studentRollNumber %></p>
+      <p>Class: <%= studentClass %></p>
+    </div>
+
+    <!-- Subject Wise Attendance Table -->
+    <div class="attendance-table">
+      <h2>Subject Wise Attendance</h2>
+      <table>
+        <!-- Table headers -->
+        <thead>
+          <tr>
+            <th>Serial Number</th>
+            <th>Subject Name</th>
+            <th>Faculty Name</th>
+            <th>Total Classes</th>
+            <th>Attended Classes</th>
+            <th>Attendance %</th>
+          </tr>
+        </thead>
+        <!-- Table data will be populated dynamically from the backend -->
+        <tbody id="subjectWiseAttendance">
+          <!-- Data will be inserted here -->
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Day Wise Attendance Table -->
+    <div class="attendance-table">
+      <h2>Day Wise Attendance</h2>
+      <table>
+        <!-- Table headers -->
+        <thead>
+          <tr>
+            <th>Serial Number</th>
+            <th>Day and Date</th>
+            <th>Period 1</th>
+            <th>Period 2</th>
+            <th>Period 3</th>
+            <th>Period 4</th>
+            <th>Period 5</th>
+            <th>Period 6</th>
+            <th>Period 7</th>
+          </tr>
+        </thead>
+        <!-- Table data will be populated dynamically from the backend -->
+        <tbody id="dayWiseAttendance">
+          <!-- Data will be inserted here -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</body>
+</html>

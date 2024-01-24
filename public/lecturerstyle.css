@@ -1,0 +1,124 @@
+/* lecturerstyle.css */
+
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+  }
+  
+  .navbar {
+    background-color: #333;
+    color: white;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .logo {
+    /* Add your logo styles here if you have one */
+  }
+  
+  .welcome-text {
+    font-size: 18px;
+  }
+  
+  .class-dropdown {
+    margin-right: 20px;
+  }
+  
+  .time-slot-section,
+  .student-section,
+  .add-student-section {
+    background-color: white;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  #timeSlots {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  
+  #students div {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .add-student-section {
+    border: 2px solid #007bff;
+  }
+  
+  .add-student-section button {
+    background-color: #007bff;
+    color: white;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .add-student-section button:hover {
+    background-color: #0056b3;
+  }
+  
+  #addStudentForm {
+    margin-top: 10px;
+  }
+  
+  #addStudentForm label {
+    margin-right: 10px;
+  }
+  
+  #addStudentForm input {
+    margin-bottom: 10px;
+    padding: 8px;
+  }
+  
+  #addStudentForm button {
+    background-color: #28a745;
+    color: white;
+    padding: 8px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  #addStudentForm button:hover {
+    background-color: #218838;
+  }
+  
+
+  /* lecturertimeslots.css */
+
+/* Add styling for time slots */
+#timeSlots {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+#timeSlots button {
+  background-color: #e6e6e6; /* Green background */
+  color: rgb(0, 0, 0);
+  border: 1px solid rgba(0, 0, 0, 0.8);
+  padding: 10px 15px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+#timeSlots button.selected {
+  background-color: #00b51e; /* Darker green for selected state */
+}
