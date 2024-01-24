@@ -31,62 +31,101 @@
     <div id="timeSlots"><!-- Time slot buttons will be dynamically populated --></div>
   </div>
 
-  <div class="student-section">
-    <h2>Students</h2>
-    <div id="students"><!-- Students' cards will be dynamically populated --></div>
-    
-    <!-- Button to submit attendance -->
-    <button onclick="submitAttendance()">Submit Attendance</button>
+
+
+
+  
+<div class="student-section">
+  <div id="students">
+    <!-- Students' cards will be dynamically populated -->
+    <% data.students.forEach(studentAttendance => { %>
+      <% const studentId = studentAttendance.studentId; %>
+      <% if (studentId) { %>
+        <% const student = data.students.find(s => s && s._id && s._id.toString() === studentId.toString()); %>
+        <div data-student-id="<%= studentId %>">
+          <span>
+            <%= student && student.name ? student.name : 'Student Not Found' %> -
+            <%= student && student.username ? student.username : 'N/A' %>
+          </span>
+          <button onclick="markAttendance('<%= studentId %>')">P</button>
+          <span>
+            Present:
+            <%= studentAttendance && studentAttendance.isPresent != undefined ? (studentAttendance.isPresent ? 'Yes' : 'No') : 'N/A' %>
+          </span>
+        </div>
+      <% } %>
+    <% }); %>
   </div>
+  <button onclick="submitAttendance()">Submit Attendance</button>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
   <script>
-// Function to load attendance data based on class and date
-function loadAttendanceData() {
-  const selectedClass = document.getElementById("classSelect").value;
-  const selectedDate = document.getElementById("datePicker").value;
+    // Function to load attendance data based on class and date
+    function loadAttendanceData() {
+      const selectedClass = document.getElementById("classSelect").value;
+      const selectedDate = document.getElementById("datePicker").value;
 
-  // AJAX request to fetch time slots based on class and date
-  fetch(`/api/getTimeSlots/${selectedClass}/${selectedDate}`)
-    .then(response => response.json())
-    .then(data => {
-      // Populate the #timeSlots div with the fetched time slots
-      const timeSlotsDiv = document.getElementById("timeSlots");
-      timeSlotsDiv.innerHTML = '';
+      // AJAX request to fetch time slots based on class and date
+      fetch(`/api/getTimeSlots/${selectedClass}/${selectedDate}`)
+        .then(response => response.json())
+        .then(data => {
+          // Populate the #timeSlots div with the fetched time slots
+          const timeSlotsDiv = document.getElementById("timeSlots");
+          timeSlotsDiv.innerHTML = '';
 
-      data.timeSlots.forEach(slot => {
-        const button = document.createElement('button');
-        button.textContent = slot.period;
-        button.onclick = () => toggleTimeSlot(button);
-        timeSlotsDiv.appendChild(button);
-      });
-    })
-    .catch(error => console.error('Error fetching time slots:', error));
+          data.timeSlots.forEach(slot => {
+            const button = document.createElement('button');
+            button.textContent = slot.period;
+            button.onclick = () => toggleTimeSlot(button);
+            timeSlotsDiv.appendChild(button);
+          });
+        })
+        .catch(error => console.error('Error fetching time slots:', error));
 
-  // AJAX request to fetch students based on the selected class
-  fetch(`/api/getStudents?class=${selectedClass}`)
-    .then(response => response.json())
-    .then(data => {
-      // Populate the #students div with the fetched student cards
-      const studentsDiv = document.getElementById("students");
-      studentsDiv.innerHTML = '';
+      // AJAX request to fetch students based on the selected class
+      fetch(`/api/getStudentsByClass/${selectedClass}`)
+        .then(response => response.json())
+        .then(data => {
+          // Populate the #students div with the fetched student cards
+          const studentsDiv = document.getElementById("students");
+          studentsDiv.innerHTML = '';
 
-      data.students.forEach(student => {
-        studentsDiv.innerHTML += `<div data-student-id="${student.rollNumber}">
-          ${student.name} - ${student.rollNumber}
-          <button onclick="markAttendance('${student.rollNumber}')">P</button>
-        </div>`;
-      });
-    })
-    .catch(error => console.error('Error fetching students:', error));
-}
-
+          data.students.forEach(student => {
+            studentsDiv.innerHTML += `<div data-student-id="${student._id}">
+              ${student.name} - ${student.username}
+              <button onclick="markAttendance('${student._id}')">P</button>
+            </div>`;
+          });
+        })
+        .catch(error => console.error('Error fetching students:', error));
+    }
 
     // Function to mark attendance for a student
     function markAttendance(studentId) {
       // Toggle the "P" option for the selected student
-      const presentOption = document.getElementById(`presentOption_${studentId}`);
+      const presentOption = document.querySelector(`[data-student-id="${studentId}"] button`);
       presentOption.innerText = (presentOption.innerText === 'P') ? 'A' : 'P';
+    }
+
+    // Function to toggle the selection of a time slot
+    function toggleTimeSlot(button) {
+      button.classList.toggle('selected');
     }
 
     // Function to submit attendance
@@ -99,7 +138,7 @@ function loadAttendanceData() {
       const studentCards = document.querySelectorAll("#students div");
       studentCards.forEach(studentCard => {
         const studentId = studentCard.getAttribute("data-student-id");
-        const isPresent = (document.getElementById(`presentOption_${studentId}`).innerText === 'P');
+        const isPresent = (studentCard.querySelector("button").innerText === 'P');
         markedStudents.push({ studentId, isPresent });
       });
 
@@ -110,9 +149,9 @@ function loadAttendanceData() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          class: selectedClass,
+          selectedClass: selectedClass,  // Updated to selectedClass
           date: selectedDate,
-          timeSlots: markedStudents,
+          students: markedStudents,
         }),
       })
       .then(response => response.json())
@@ -121,11 +160,6 @@ function loadAttendanceData() {
         console.log(data.message);
       })
       .catch(error => console.error('Error submitting attendance:', error));
-    }
-
-    // Function to toggle the selection of a time slot
-    function toggleTimeSlot(button) {
-      button.classList.toggle('selected');
     }
   </script>
 </body>

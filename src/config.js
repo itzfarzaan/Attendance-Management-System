@@ -54,11 +54,40 @@ const TeacherLoginSchema = new mongoose.Schema({
   }
 });
 
+const AttendanceSchema = new mongoose.Schema({
+  class: {
+    type: String,
+    required: true
+  },
+  date: {
+    type: Date,
+    required: true
+  },
+  // Example structure for student attendance
+  students: [
+    {
+      studentId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Student'  // Reference to the Student model
+      },
+      isPresent: {
+        type: Boolean,
+        default: false
+      },
+      rollNumber: {
+        type: mongoose.Schema.Types.String,
+        ref: 'Student.username'
+      },
+    }
+  ]
+});
+
 
 
 //Models
 const collection = new mongoose.model("Student", LoginSchema);
 const collection2 = new mongoose.model("Teacher", TeacherLoginSchema);
+const Attendance = new mongoose.model("Attendance", AttendanceSchema);
 
 
 // Uncomment the below function to check the userdata arrays
@@ -74,5 +103,6 @@ const collection2 = new mongoose.model("Teacher", TeacherLoginSchema);
 
 module.exports = {
   collection,
-  collection2
+  collection2,
+  Attendance
 };

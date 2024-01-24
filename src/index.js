@@ -3,6 +3,8 @@ const path = require("path");
 const bcrypt = require("bcrypt");
 const bodyParser = require("body-parser");
 const { collection, collection2 } = require("./config");
+const { Attendance } = require("./config");
+const mongoose = require("mongoose");
 
 const app = express();
 
@@ -28,6 +30,12 @@ app.get("/t_login", (req, res) => {
 app.get("/s_login", (req, res) => {
   res.render("s_login");
 });
+
+
+
+
+
+
 
 // login function for students
 app.post("/login", async (req, res) => {
@@ -78,6 +86,9 @@ app.get("/home/:rollNumber", async (req, res) => {
 
 
 
+
+
+
 //login function for teachers
 app.post("/login2", async (req, res) => {
   try {
@@ -102,22 +113,33 @@ app.post("/login2", async (req, res) => {
 });
 
 
+
 app.get("/lecturerdash/:username", async (req, res) => {
   try {
     const lecturerData = await collection2.findOne({ username: req.params.username });
+
+    // Log the classes to check if they are correct
+    console.log("Lecturer Classes:", lecturerData.classes);
+
+    // Fetch students based on the classes taught by the lecturer
+    const studentsData = await collection.find({ class: { $in: lecturerData.classes } });
+
+    // Log the fetched student data for debugging
+    console.log("Fetched Students Data:", studentsData);
+
     const currentDate = new Date().toISOString().split('T')[0];
 
     res.render("lecturerdash", {
       lecturerFullName: lecturerData.fullName,
       lecturerClasses: lecturerData.classes,
       currentDate,
+      data: { students: studentsData || [] }
     });
   } catch (error) {
     console.error("Error fetching lecturer data:", error);
     res.status(500).send("Internal Server Error");
   }
 });
-
 
 
 
@@ -145,6 +167,15 @@ app.get("/api/getTimeSlots/:class/:date", async (req, res) => {
   }
 });
 
+
+
+
+
+
+
+
+
+
 // Route to fetch students based on class
 app.get("/api/getStudents", async (req, res) => {
   try {
@@ -169,16 +200,60 @@ app.get("/api/getStudents", async (req, res) => {
 
 
 
+
+
 // Route to submit attendance data
 app.post("/api/submitAttendance", async (req, res) => {
   try {
-    const { class: selectedClass, date, timeSlots } = req.body;
+    const { selectedClass, date, students } = req.body;
 
-    // Process and store attendance data in your database
-    // For now, a placeholder response is sent
+    // Check if the 'selectedClass' field is provided
+    if (!selectedClass) {
+      return res.status(400).json({ error: 'Class is required' });
+    }
+    console.log(req.body);
+
+    // Convert studentId strings to ObjectId
+    const formattedStudents = students.map(student => {
+      return {
+        studentId: new mongoose.Types.ObjectId(student.studentId),
+        isPresent: student.isPresent,
+        rollNumber: student.rollNumber,
+      };
+    });
+
+    // Create a new attendance document
+    const newAttendance = new Attendance({ class: selectedClass, date, students: formattedStudents });
+
+    // Save the new attendance document
+    await newAttendance.save();
+
+    // Log a message to confirm successful submission
+    console.log("Attendance submitted successfully");
+
     res.json({ message: 'Attendance submitted successfully' });
   } catch (error) {
     console.error('Error submitting attendance:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+
+
+
+
+
+app.get("/api/getStudentsByClass/:class", async (req, res) => {
+  try {
+    const selectedClass = req.params.class;
+
+    // Retrieve students based on the selected class from your database
+    const students = await collection.find({ class: selectedClass });
+
+    res.json({ students });
+  } catch (error) {
+    console.error('Error fetching students:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
