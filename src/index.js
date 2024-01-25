@@ -149,6 +149,9 @@ app.get("/lecturerdash/:username", async (req, res) => {
 
 
 
+
+
+
 // Route to fetch time slots based on class and date
 app.get("/api/getTimeSlots/:class/:date", async (req, res) => {
   try {
@@ -205,7 +208,7 @@ app.get("/api/getStudents", async (req, res) => {
 // Route to submit attendance data
 app.post("/api/submitAttendance", async (req, res) => {
   try {
-    const { selectedClass, date, students } = req.body;
+    const { selectedClass, date, students} = req.body;
 
     // Check if the 'selectedClass' field is provided
     if (!selectedClass) {
@@ -223,7 +226,7 @@ app.post("/api/submitAttendance", async (req, res) => {
     });
 
     // Create a new attendance document
-    const newAttendance = new Attendance({ class: selectedClass, date, students: formattedStudents });
+    const newAttendance =new Attendance({ class: selectedClass, date, students: formattedStudents });
 
     // Save the new attendance document
     await newAttendance.save();

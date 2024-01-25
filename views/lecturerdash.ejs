@@ -42,12 +42,12 @@
       <% const studentId = studentAttendance.studentId; %>
       <% if (studentId) { %>
         <% const student = data.students.find(s => s && s._id && s._id.toString() === studentId.toString()); %>
-        <div data-student-id="<%= studentId %>">
+        <div data-student-id="<%= studentId %>" data-roll-number="<%= student.username %>">
           <span>
             <%= student && student.name ? student.name : 'Student Not Found' %> -
             <%= student && student.username ? student.username : 'N/A' %>
           </span>
-          <button onclick="markAttendance('<%= studentId %>')">P</button>
+          <button onclick="markAttendance('<%= studentId %>')">A</button>
           <span>
             Present:
             <%= studentAttendance && studentAttendance.isPresent != undefined ? (studentAttendance.isPresent ? 'Yes' : 'No') : 'N/A' %>
@@ -98,6 +98,9 @@
         })
         .catch(error => console.error('Error fetching time slots:', error));
 
+
+
+
       // AJAX request to fetch students based on the selected class
       fetch(`/api/getStudentsByClass/${selectedClass}`)
         .then(response => response.json())
@@ -107,20 +110,34 @@
           studentsDiv.innerHTML = '';
 
           data.students.forEach(student => {
-            studentsDiv.innerHTML += `<div data-student-id="${student._id}">
-              ${student.name} - ${student.username}
-              <button onclick="markAttendance('${student._id}')">P</button>
+            studentsDiv.innerHTML += `<div data-student-id="${student._id}" data-roll-number="${student.username}">
+              ${student.name} - ${student.username} 
+              <button onclick="markAttendance('${student._id}')">A</button>
             </div>`;
           });
         })
         .catch(error => console.error('Error fetching students:', error));
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     // Function to mark attendance for a student
     function markAttendance(studentId) {
       // Toggle the "P" option for the selected student
       const presentOption = document.querySelector(`[data-student-id="${studentId}"] button`);
-      presentOption.innerText = (presentOption.innerText === 'P') ? 'A' : 'P';
+      presentOption.innerText = (presentOption.innerText === 'A') ? 'P' : 'A';
     }
 
     // Function to toggle the selection of a time slot
@@ -128,39 +145,58 @@
       button.classList.toggle('selected');
     }
 
+
+
+
+
+
+
+
+
+
+
+
     // Function to submit attendance
     function submitAttendance() {
-      const selectedClass = document.getElementById("classSelect").value;
-      const selectedDate = document.getElementById("datePicker").value;
+    const selectedClass = document.getElementById("classSelect").value;
+    const selectedDate = document.getElementById("datePicker").value;
 
-      // Collect marked students
-      const markedStudents = [];
-      const studentCards = document.querySelectorAll("#students div");
-      studentCards.forEach(studentCard => {
-        const studentId = studentCard.getAttribute("data-student-id");
-        const isPresent = (studentCard.querySelector("button").innerText === 'P');
-        markedStudents.push({ studentId, isPresent });
-      });
+    // Collect marked students
+    const markedStudents = [];
+    const studentCards = document.querySelectorAll("#students div");
 
-      // AJAX request to submit attendance data to the server
-      fetch('/api/submitAttendance', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          selectedClass: selectedClass,  // Updated to selectedClass
-          date: selectedDate,
-          students: markedStudents,
-        }),
-      })
-      .then(response => response.json())
-      .then(data => {
-        // Handle success or display any messages from the server
-        console.log(data.message);
-      })
-      .catch(error => console.error('Error submitting attendance:', error));
-    }
+    studentCards.forEach(studentCard => {
+      const studentId = studentCard.getAttribute("data-student-id");
+      const isPresent = (studentCard.querySelector("button").innerText === 'P');
+      const rollNumber = studentCard.getAttribute("data-roll-number");
+      markedStudents.push({ studentId, isPresent, rollNumber });
+
+      // Clear the inner HTML of each student card
+      studentCard.innerHTML = '';
+    });
+
+    // AJAX request to submit attendance data to the server
+    fetch('/api/submitAttendance', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        selectedClass: selectedClass,
+        date: selectedDate,
+        students: markedStudents,
+      }),
+    })
+    .then(response => response.json())
+    .then(data => {
+      // Handle success or display any messages from the server
+      console.log(data.message);
+    })
+    .catch(error => console.error('Error submitting attendance:', error));
+  }
+
+
+
   </script>
 </body>
 </html>
