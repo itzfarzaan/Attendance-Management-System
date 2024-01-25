@@ -60,7 +60,7 @@ const AttendanceSchema = new mongoose.Schema({
     required: true
   },
   date: {
-    type: Date,
+    type: String,
     required: true
   },
   // Example structure for student attendance
@@ -79,7 +79,11 @@ const AttendanceSchema = new mongoose.Schema({
         ref: 'Student.username'
       },
     }
-  ]
+  ],
+  totalperiodstaken: {
+    type: Number,
+    default: 1
+  },
 });
 
 

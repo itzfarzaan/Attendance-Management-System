@@ -115,6 +115,8 @@ app.post("/login2", async (req, res) => {
 
 
 
+
+
 app.get("/lecturerdash/:username", async (req, res) => {
   try {
     const lecturerData = await collection2.findOne({ username: req.params.username });
@@ -211,10 +213,19 @@ app.post("/api/submitAttendance", async (req, res) => {
   try {
     const { selectedClass, date, students } = req.body;
 
+
+    
+
     // Check if the 'selectedClass' field is provided
     if (!selectedClass) {
       return res.status(400).json({ error: 'Class is required' });
     }
+
+
+    await Attendance.findOneAndUpdate(
+      { class: selectedClass, date },
+      { $inc: { totalperiodstaken: 1 } } // Increment by 1 each time the button is clicked
+    );
 
     // Check if an attendance record for the given class and date already exists
     const existingAttendance = await Attendance.findOne({ class: selectedClass, date });
@@ -287,6 +298,64 @@ app.get("/api/getStudentsByClass/:class", async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
+
+
+
+
+
+
+
+
+
+
+// Route to fetch day-wise attendance data with user authentication
+app.get("/api/getDayWiseAttendance/:rollNumber", async (req, res) => {
+  try {
+    const studentRollNumber = req.params.rollNumber;
+    // Fetch all attendance records for the student with the provided roll number
+    const studentAttendanceRecords = await Attendance.find({
+      "students.rollNumber": studentRollNumber,
+    
+
+
+    });
+    // Transform the data to the required format for day-wise attendance
+    const dayWiseAttendanceData = studentAttendanceRecords.map((record) => {
+      // Find the student's attendance entry for the provided roll number
+      const studentAttendance = record.students.find(
+        (student) => student.rollNumber === studentRollNumber
+      );
+
+
+
+
+
+
+
+
+
+
+
+      return {
+        dayAndDate: record.date,
+        totalClassesAttended: studentAttendance.isPresent ? 1 : 0,
+        totalNumberOfPeriods: record.totalperiodstaken,
+        attendancePercentage:
+          ((studentAttendance.isPresent ? 1 : 0) /
+            record.totalperiodstaken) *
+          100,
+      };
+    });
+
+    res.json(dayWiseAttendanceData);
+  } catch (error) {
+    console.error("Error fetching day-wise attendance:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
 
 
 

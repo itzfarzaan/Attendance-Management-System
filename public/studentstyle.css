@@ -74,3 +74,45 @@ body {
   
   /* Optional: Add more styling based on your preferences */
   
+/* Progress Ring Styles */
+.progress-ring {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px; /* Adjust the margin as needed */
+}
+
+.progress-circle {
+  position: relative;
+}
+
+.progress-svg {
+  transform: rotate(-90deg);
+}
+
+.progress-background {
+  fill: none;
+  stroke: #ddd; /* Background color */
+  stroke-width: 8;
+}
+
+.progress-bar {
+  fill: none;
+  stroke: #4caf50; /* Progress color */
+  stroke-width: 8;
+  stroke-dasharray: 339; /* Circumference of the circle (2 * π * r) */
+  stroke-dashoffset: var(--dash-offset);
+}
+
+.progress-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 16px;
+}
+
+
+
+
+
