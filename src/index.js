@@ -208,28 +208,44 @@ app.get("/api/getStudents", async (req, res) => {
 // Route to submit attendance data
 app.post("/api/submitAttendance", async (req, res) => {
   try {
-    const { selectedClass, date, students} = req.body;
+    const { selectedClass, date, students } = req.body;
 
     // Check if the 'selectedClass' field is provided
     if (!selectedClass) {
       return res.status(400).json({ error: 'Class is required' });
     }
-    console.log(req.body);
 
-    // Convert studentId strings to ObjectId
-    const formattedStudents = students.map(student => {
-      return {
-        studentId: new mongoose.Types.ObjectId(student.studentId),
-        isPresent: student.isPresent,
-        rollNumber: student.rollNumber,
-      };
-    });
+    // Check if an attendance record for the given class and date already exists
+    const existingAttendance = await Attendance.findOne({ class: selectedClass, date });
 
-    // Create a new attendance document
-    const newAttendance =new Attendance({ class: selectedClass, date, students: formattedStudents });
+    if (existingAttendance) {
+      // If an attendance record exists, update the students field
+      existingAttendance.students = students.map(student => {
+        return {
+          studentId: new mongoose.Types.ObjectId(student.studentId),
+          isPresent: student.isPresent,
+          rollNumber: student.rollNumber,
+        };
+      });
 
-    // Save the new attendance document
-    await newAttendance.save();
+      // Save the updated attendance record
+      await existingAttendance.save();
+    } else {
+      // If no attendance record exists, create a new one
+      const formattedStudents = students.map(student => {
+        return {
+          studentId: new mongoose.Types.ObjectId(student.studentId),
+          isPresent: student.isPresent,
+          rollNumber: student.rollNumber,
+        };
+      });
+
+      // Create a new attendance document
+      const newAttendance = new Attendance({ class: selectedClass, date, students: formattedStudents });
+
+      // Save the new attendance document
+      await newAttendance.save();
+    }
 
     // Log a message to confirm successful submission
     console.log("Attendance submitted successfully");
@@ -240,6 +256,7 @@ app.post("/api/submitAttendance", async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 
 
 
