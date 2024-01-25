@@ -310,6 +310,7 @@ app.get("/api/getStudentsByClass/:class", async (req, res) => {
 
 
 // Route to fetch day-wise attendance data with user authentication
+// Route to fetch day-wise attendance data with user authentication
 app.get("/api/getDayWiseAttendance/:rollNumber", async (req, res) => {
   try {
     const studentRollNumber = req.params.rollNumber;
