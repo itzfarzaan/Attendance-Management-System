@@ -70,6 +70,7 @@ app.get("/home/:rollNumber", async (req, res) => {
       studentName: studentData.name,
       studentRollNumber: studentData.username,
       studentClass: studentData.class,
+      studentTotalAttendedClasses: studentData.totalAttendedClasses,
       // attendancePercentage: calculateAttendancePercentage(studentData.attendance),
     });
   } catch (error) {
@@ -245,8 +246,17 @@ app.post("/api/submitAttendance", async (req, res) => {
 
       // Save the new attendance document
       await newAttendance.save();
+
+      
     }
 
+    const studentsWithAttendance = req.body.students.filter(student => student.isPresent);
+    const studentsRollNumbers = studentsWithAttendance.map(student => student.rollNumber);
+
+    await collection.updateMany(
+      { username: { $in: studentsRollNumbers } },
+      { $inc: { totalAttendedClasses: 1 } }
+    );
     // Log a message to confirm successful submission
     console.log("Attendance submitted successfully");
 

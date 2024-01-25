@@ -6,7 +6,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Student Dashboard</title>
-  <link rel="stylesheet" href="/style.css">
+  <link rel="stylesheet" href="/studentstyle.css">
 </head>
 <body>
 
@@ -24,6 +24,8 @@
       <p>Name: <%= studentName %></p>
       <p>Roll Number: <%= studentRollNumber %></p>
       <p>Class: <%= studentClass %></p>
+      <!-- Display total attended classes -->
+      <p>Total Attended Classes: <%= studentTotalAttendedClasses %></p>
     </div>
 
     <!-- Subject Wise Attendance Table -->
@@ -55,15 +57,9 @@
         <!-- Table headers -->
         <thead>
           <tr>
-            <th>Serial Number</th>
+            <th>S.No.</th>
             <th>Day and Date</th>
-            <th>Period 1</th>
-            <th>Period 2</th>
-            <th>Period 3</th>
-            <th>Period 4</th>
-            <th>Period 5</th>
-            <th>Period 6</th>
-            <th>Period 7</th>
+            <th>Total Classes Attended</th>
           </tr>
         </thead>
         <!-- Table data will be populated dynamically from the backend -->

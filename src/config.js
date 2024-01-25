@@ -29,10 +29,10 @@ const LoginSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  // attendance: [
-  //   // Define the structure of the attendance array
-  //   // Example: { subject: "Math", totalClasses: 20, attendedClasses: 15, dayWise: [...] }
-  // ]
+  totalAttendedClasses: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const TeacherLoginSchema = new mongoose.Schema({
