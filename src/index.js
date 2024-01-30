@@ -208,20 +208,19 @@ app.get("/api/getStudents", async (req, res) => {
 
 
 
-// Route to submit attendance data
 app.post("/api/submitAttendance", async (req, res) => {
   try {
     const { selectedClass, date, students } = req.body;
 
-
-    
-
     // Check if the 'selectedClass' field is provided
-    if (!selectedClass) {
-      return res.status(400).json({ error: 'Class is required' });
+    if (!selectedClass || !date) {
+      return res.status(400).json({ error: 'Class and date are required' });
     }
 
+    // Log the received data for debugging
+    console.log('Received Data:', { selectedClass, date, students });
 
+    // Update attendance record
     await Attendance.findOneAndUpdate(
       { class: selectedClass, date },
       { $inc: { totalperiodstaken: 1 } } // Increment by 1 each time the button is clicked
@@ -257,17 +256,37 @@ app.post("/api/submitAttendance", async (req, res) => {
 
       // Save the new attendance document
       await newAttendance.save();
-
-      
     }
 
-    const studentsWithAttendance = req.body.students.filter(student => student.isPresent);
-    const studentsRollNumbers = studentsWithAttendance.map(student => student.rollNumber);
+    // Update student's dayWiseAttendance
+    for (const student of students) {
+      const { studentId, isPresent } = student;
 
-    await collection.updateMany(
-      { username: { $in: studentsRollNumbers } },
-      { $inc: { totalAttendedClasses: 1 } }
-    );
+      // Log the query parameters for debugging
+      console.log('Query Parameters:', { _id: studentId, 'dayWiseAttendance.date': date });
+
+      // Use the positional $ operator to update the correct element in the array
+      // Find the student document
+      const studentDoc = await collection.findById(studentId);
+
+      // Find the index of the date in the dayWiseAttendance array
+      const dateIndex = studentDoc.dayWiseAttendance.findIndex(entry => entry.date === date);
+
+      if (dateIndex !== -1) {
+        // If the date exists, update the numberOfClasses
+        studentDoc.dayWiseAttendance[dateIndex].numberOfClasses += isPresent ? 1 : 0;
+      } else {
+        // If the date doesn't exist, add a new entry
+        studentDoc.dayWiseAttendance.push({
+          date: date,
+          numberOfClasses: isPresent ? 1 : 0
+        });
+      }
+
+      // Save the modified document back to the database
+      await studentDoc.save();
+    }
+
     // Log a message to confirm successful submission
     console.log("Attendance submitted successfully");
 

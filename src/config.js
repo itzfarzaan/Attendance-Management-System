@@ -29,10 +29,22 @@ const LoginSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  totalAttendedClasses: {
-    type: Number,
-    default: 0,
-  },
+
+  dayWiseAttendance: {
+    type: [
+      {
+        date: {
+          type: String,
+          required: true,
+        },
+        numberOfClasses: {
+          type: Number,
+          default: 1,
+        }
+      }
+    ],
+    default: [] // Initialize as an empty array by default
+  }
 });
 
 const TeacherLoginSchema = new mongoose.Schema({
