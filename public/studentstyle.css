@@ -1,118 +1,143 @@
 /* Reset some default styles */
 body, h1, h2, h3, p, ul, li, table {
-    margin: 0;
-    padding: 0;
-  }
-  
-body {
-    font-family: Arial, sans-serif;
-  }
-  
-  /* Navigation Bar Styles */
-.navbar {
-    background-color: #333;
-    color: #fff;
-    padding: 10px;
-    text-align: center;
-  }
-  
-/* .navbar .logo {
-    /* Add your logo styling here */
+  margin: 0;
+  padding: 0;
+}
 
-  
-  .navbar .welcome-text {
-    font-size: 18px;
-  }
-  
-  /* Dashboard Container Styles */
-  .dashboard-container {
-    margin: 20px;
-  }
-  
-  /* Student Information Styles */
-  .student-info {
-    background-color: #f0f0f0;
-    border: 1px solid #ccc;
-    padding: 15px;
-    margin-bottom: 20px;
-  }
-  
-  .student-info h2 {
-    font-size: 20px;
-    margin-bottom: 10px;
-  }
-  
-  .student-info p {
-    margin-bottom: 5px;
-  }
-  
-  /* Attendance Table Styles */
-  .attendance-table {
-    margin-bottom: 20px;
-  }
-  
-  .attendance-table h2 {
-    font-size: 18px;
-    margin-bottom: 10px;
-  }
-  
-  /* Table Styles */
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 10px;
-  }
-  
-  table, th, td {
-    border: 1px solid #ccc;
-  }
-  
-  th, td {
-    padding: 10px;
-    text-align: left;
-  }
-  
-  /* Optional: Add more styling based on your preferences */
-  
-/* Progress Ring Styles */
-.progress-ring {
+body {
+  font-family: Arial, sans-serif;
+}
+
+/* Navigation Bar Styles */
+.navbar {
+  background-color: #333;
+  color: #fff;
+  padding: 10px;
+  text-align: center;
+}
+
+/* .navbar .logo {
+  /* Add your logo styling here */
+
+
+.navbar .welcome-text {
+  font-size: 18px;
+}
+
+/* Dashboard Container Styles */
+.dashboard-container {
+  margin: 20px;
+}
+
+/* Student Information Styles */
+.student-info {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.student-info h2 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.student-info p {
+  margin-bottom: 5px;
+}
+
+/* Attendance Table Styles */
+.attendance-table {
+  margin-bottom: 20px;
+}
+
+.attendance-table h2 {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+/* Table Styles */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+table, th, td {
+  border: 1px solid #ccc;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.progress-ring-container {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 20px; /* Adjust the margin as needed */
+  height: 500px; /* Adjust height as needed */
+  width:500 ;
+  background: radial-gradient(circle, #e0e0e0, #ffffff); /* Example gradient */
 }
 
-.progress-circle {
+
+
+
+.progress-ring {
   position: relative;
+  width: 5000px; /* Adjust width as needed */
+  height: 500px; /* Adjust height as needed */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  
 }
 
-.progress-svg {
-  transform: rotate(-90deg);
-}
 
-.progress-background {
+
+.progress-ring-circle {
+  height: 120px;
+
+  position:absolute;
   fill: none;
-  stroke: #ddd; /* Background color */
-  stroke-width: 8;
+  stroke: linear-gradient(to right, #6448e0, #007bff); /* Example gradient */
+  stroke-width: 16; /* Width of the progress ring */
+  stroke-linecap: round; /* Rounded line ends */
+  transition: stroke-dashoffset 0.35s; /* Smooth transition effect */
 }
 
-.progress-bar {
+
+.progress-ring-circle-bg {
   fill: none;
-  stroke: #4caf50; /* Progress color */
-  stroke-width: 8;
-  stroke-dasharray: 339; /* Circumference of the circle (2 * π * r) */
-  stroke-dashoffset: var(--dash-offset);
+  stroke: #f0f0f0; /* Background color */
+  stroke-width: 10; /* Width of the background ring */
 }
 
-.progress-label {
+.progress-ring-text {
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 16px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+  z-index: 1;
+  transition: color 0.3s ease-in-out; /* Example animation */
 }
-
-
-
-
-

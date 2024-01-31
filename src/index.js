@@ -65,12 +65,26 @@ app.get("/home/:rollNumber", async (req, res) => {
     // Fetch student data from the database using the rollNumber
     const studentData = await collection.findOne({ username: req.params.rollNumber });
 
+    const attendanceRecords = await Attendance.find({ "students.rollNumber": req.params.rollNumber });
+    let totalPeriodsTaken = 0;
+    attendanceRecords.forEach(record => {
+      totalPeriodsTaken += record.totalperiodstaken;
+    });
+
+
+    let sumTotalClassesAttended = 0;
+
+    studentData.dayWiseAttendance.forEach((entry) => {
+      sumTotalClassesAttended += entry.numberOfClasses;
+    });
+
     // Render the student dashboard template with the retrieved data
     res.render("home", {
       studentName: studentData.name,
       studentRollNumber: studentData.username,
       studentClass: studentData.class,
-      studentTotalAttendedClasses: studentData.totalAttendedClasses,
+      studentTotalAttendedClasses: sumTotalClassesAttended,
+      totalPeriodsTaken: totalPeriodsTaken,
       // attendancePercentage: calculateAttendancePercentage(studentData.attendance),
     });
   } catch (error) {
@@ -135,6 +149,8 @@ app.get("/lecturerdash/:username", async (req, res) => {
     res.render("lecturerdash", {
       lecturerFullName: lecturerData.fullName,
       lecturerClasses: lecturerData.classes,
+      periodstaken:lecturerData.totalperiodstaken,
+      //sumTotalNumberOfPeriods:lecturerData.totalperiodstaken,
       currentDate,
       data: { students: studentsData || [] }
     });
@@ -163,6 +179,10 @@ app.get("/api/getTimeSlots/:class/:date", async (req, res) => {
     const timeSlots = [
       { period: "Period 1" },
       { period: "Period 2" },
+      { period: "Period 3" },
+      { period: "Period 4" },
+      { period: "Period 5" },
+      { period: "Period 6" },
       // ... add more periods as needed
     ];
 
@@ -333,13 +353,17 @@ app.get("/api/getStudentsByClass/:class", async (req, res) => {
 app.get("/api/getDayWiseAttendance/:rollNumber", async (req, res) => {
   try {
     const studentRollNumber = req.params.rollNumber;
+
     // Fetch all attendance records for the student with the provided roll number
     const studentAttendanceRecords = await Attendance.find({
       "students.rollNumber": studentRollNumber,
-    
-
-
     });
+
+    // Fetch the student document to get dayWiseAttendance
+    const studentData = await collection.findOne({
+      username: studentRollNumber,
+    });
+
     // Transform the data to the required format for day-wise attendance
     const dayWiseAttendanceData = studentAttendanceRecords.map((record) => {
       // Find the student's attendance entry for the provided roll number
@@ -347,26 +371,31 @@ app.get("/api/getDayWiseAttendance/:rollNumber", async (req, res) => {
         (student) => student.rollNumber === studentRollNumber
       );
 
-
-
-
-
-
-
-
-
-
-
       return {
         dayAndDate: record.date,
-        totalClassesAttended: studentAttendance.isPresent ? 1 : 0,
         totalNumberOfPeriods: record.totalperiodstaken,
-        attendancePercentage:
-          ((studentAttendance.isPresent ? 1 : 0) /
-            record.totalperiodstaken) *
-          100,
       };
     });
+
+    // Construct an object to hold day-wise attendance data
+    const dayWiseAttendance = {};
+
+    // Loop through the dayWiseAttendance array and extract the numberOfClasses for each date
+    studentData.dayWiseAttendance.forEach((entry) => {
+      dayWiseAttendance[entry.date] = {
+        totalClassesAttended: entry.numberOfClasses,
+      };
+    });
+
+    // Merge the dayWiseAttendance data into the attendance data
+    dayWiseAttendanceData.forEach((entry) => {
+      const date = entry.dayAndDate;
+      entry.totalClassesAttended = dayWiseAttendance[date]
+        ? dayWiseAttendance[date].totalClassesAttended
+        : 0;
+
+    });
+
 
     res.json(dayWiseAttendanceData);
   } catch (error) {
@@ -390,9 +419,7 @@ app.get("/api/getDayWiseAttendance/:rollNumber", async (req, res) => {
 
 
 
-
 const port = 5500;
 app.listen(port, () => {
   console.log(`Server running on port: ${port}`);
 })
-

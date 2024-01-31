@@ -38,7 +38,7 @@
           <tr>
             <th>S.No.</th>
             <th>Day and Date</th>
-            <th>Total Classes Attended</th>
+            <th>Number of Classes Attended</th>
             <th>Total Number of Periods</th>
             <th>Attendance Percentage</th>
           </tr>
@@ -54,65 +54,107 @@
 
 
 
-<script> 
+  <script> 
+    const studentRollNumber = document.getElementById("studentRollNumber").getAttribute("data-roll-number");
+  
+    document.addEventListener("DOMContentLoaded", function () {
+      // Function to fetch and update day-wise attendance data
+      function updateDayWiseAttendance() {
+        // Replace with the actual route for fetching day-wise attendance data
+        const fetchUrl = `/api/getDayWiseAttendance/${studentRollNumber}`;
+  
+        // Make an AJAX request to fetch day-wise attendance data
+        fetch(fetchUrl)
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("Fetched data:", data); // Log the fetched data to the console
+            // Clear existing rows in the table
+            const tbody = document.getElementById("dayWiseAttendance");
+            tbody.innerHTML = "";
+  
+            // Variables to calculate sum and total classes attended
+            //let sumPercentage = 0;
+            let totalClassesAttended = 0;
+            //const dwattendance=((entry.totalClassesAttended)/entry.totalNumberOfPeriods)*100;
+            // Populate the table with fetched data
+            data.forEach((entry, index) => {
+              const dwattendance=(((entry.totalClassesAttended)/entry.totalNumberOfPeriods)*100).toPrecision(4);
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${entry.dayAndDate}</td>
+                <td>${entry.totalClassesAttended}</td>
+                <td>${entry.totalNumberOfPeriods}</td>
+                <td>${dwattendance}%</td>
+              `;
+              tbody.appendChild(row);
+  
+              //totalNumberOfPeriods+=entry.totalNumberOfPeriods;
+            });
+  
+            // Calculate average attendance percentage
+            const averagePercentage = `<%= studentTotalAttendedClasses %>` > 0 ? ((`<%= studentTotalAttendedClasses %>` / `<%= totalPeriodsTaken %>`) * 100).toFixed(2) : 0;
+  
+            // Display the total attended classes and average percentage in student information
+            const totalClassesElement = document.querySelector(".student-info p:nth-child(6)");
+            totalClassesElement.innerHTML =` Average Attendance Percentage: ${averagePercentage}%`;
+  
+            // Update the progress ring with the average percentage
+            const progressBar = document.querySelector(".progress-ring-circle");
+            const progressPercent = document.querySelector(".progress-percent");
+  
+            function updateProgress(percent) {
+  const circumference = 2 * Math.PI * progressBar.getAttribute("r");
+  const offset = circumference - (percent / 100) * circumference;
 
-  const studentRollNumber = document.getElementById("studentRollNumber").getAttribute("data-roll-number");
-
-  document.addEventListener("DOMContentLoaded", function () {
-    // Function to fetch and update day-wise attendance data
-    function updateDayWiseAttendance() {
-  // Replace with the actual route for fetching day-wise attendance data
-  const fetchUrl = `/api/getDayWiseAttendance/${studentRollNumber}`;
-
-  // Make an AJAX request to fetch day-wise attendance data
-  fetch(fetchUrl)
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Fetched data:", data); // Log the fetched data to the console
-      // Clear existing rows in the table
-      const tbody = document.getElementById("dayWiseAttendance");
-      tbody.innerHTML = "";
-
-      // Variables to calculate sum and total classes attended
-      let sumPercentage = 0;
-      let totalClassesAttended = 0;
-
-      // Populate the table with fetched data
-      data.forEach((entry, index) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `
-          <td>${index + 1}</td>
-          <td>${entry.dayAndDate}</td>
-          <td>${entry.numberOfClasses}</td>
-          <td>${entry.totalNumberOfPeriods}</td>
-          <td>${entry.attendancePercentage}%</td>
-          
-        `;
-        tbody.appendChild(row);
-
-        
-        totalClassesAttended += entry.totalNumberOfPeriods;
-      });
-
-
-
-
-
-      
-      // Calculate average attendance percentage
-      const averagePercentage = totalClassesAttended > 0 ? (( `<%= studentTotalAttendedClasses %>`/ totalClassesAttended)*100).toFixed(2) : 0;
-
-      // Display the total attended classes and average percentage in student information
-      const totalClassesElement = document.querySelector(".student-info p:nth-child(6)");
-      totalClassesElement.innerHTML = `Total Attended Classes: ${totalClassesAttended} | Average Attendance Percentage: ${averagePercentage}%`;
-    })
-    .catch((error) => console.error("Error fetching day-wise attendance:", error));
+  progressBar.style.strokeDasharray = circumference;
+  progressBar.style.strokeDashoffset = offset;
+  progressPercent.textContent = percent + "%";
 }
+  
+            updateProgress(averagePercentage);
+          })
+          .catch((error) => console.error("Error fetching day-wise attendance:", error));
+      }
+  
+      // Initial call to fetch and update day-wise attendance data
+      updateDayWiseAttendance();
+    });
+  </script>
 
-    // Initial call to fetch and update day-wise attendance data
-    updateDayWiseAttendance();
-  });
-</script>
+
+
+
+<div class="progress-ring-container">
+  <div class="progress-ring" >
+    <svg width="200" height="200"> <!-- Adjust width and height as needed -->
+      <defs>
+        <linearGradient id="progressGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#6448e0" />
+          <stop offset="100%" stop-color="#007bff" />
+        </linearGradient>
+      </defs>
+
+
+      <circle class="progress-ring-outline" stroke="#333" stroke-width="4" fill="none" r="85" cx="100" cy="100"></circle>
+
+
+      <circle class="progress-ring-circle" stroke="url(#progressGradient)" stroke-width="15" fill="none" r="75" cx="100" cy="100" transform="rotate(-90 100 100)"></circle>
+      
+      <circle class="progress-ring-inner-outline" stroke="#333" stroke-width="4" fill="none" r="65" cx="100" cy="100"></circle>
+
+
+
+      <!-- Mark at 75% -->
+      <line x1="100" y1="35" x2="100" y2="15" stroke="red" stroke-width="3" transform="rotate(-90 100 100)" />
+    </svg>
+    
+    <div class="progress-ring-text">
+      <span class="progress-percent">0%</span>
+    </div>
+  </div>
+</div>
+  
 
 </body>
 </html>

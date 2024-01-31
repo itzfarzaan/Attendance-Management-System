@@ -19,7 +19,7 @@
         <% for (let i = 0; i < lecturerClasses.length; i++) { %>
           <option value="<%= lecturerClasses[i] %>"><%= lecturerClasses[i] %></option>
         <% } %>
-      </select>
+      </select> 
     </div>
   </nav>
 
@@ -28,7 +28,7 @@
     <input type="date" id="datePicker" onchange="loadAttendanceData()" value="<%= currentDate %>">
     <br><br>
     <label for="timeSlots">Select Time Slots:</label>
-    <div id="timeSlots"><!-- Time slot buttons will be dynamically populated --></div>
+    <div id="timeSlots"></div>
   </div>
 
 
@@ -111,7 +111,7 @@
 
           data.students.forEach(student => {
             studentsDiv.innerHTML += `<div data-student-id="${student._id}" data-roll-number="${student.username}">
-              ${student.name} - ${student.username} 
+              ${student.username} - ${student.name} 
               <button onclick="markAttendance('${student._id}')">A</button>
             </div>`;
           });
