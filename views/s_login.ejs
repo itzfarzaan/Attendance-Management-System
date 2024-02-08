@@ -1,36 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Login</title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Login</title>
 
-  <link rel="stylesheet" href="/style.css">
-  <script>
-    function updateFormAction() {
-      var rollNumber = document.getElementById('rollnumber').value;
-      document.forms[0].action = "/home/" + rollNumber;
-    }
-  </script>
-</head>
-<body>
-
-  <div action="/s-login" class="form-container">
-    <h2>Student Login</h2>
-    <form action="/login" method="post">
-      <div class="form-group">
-        <label for="name">Roll Number: </label>
-        <input type="number" id="rollnumber" name="username" placeholder="Enter your Roll Number" required autocomplete="off">
-      </div>
-      <div class="form-group">
-        <label for="password">Password:</label>
-        <input type="password" name="password" id="password" placeholder="Password" required>
-      </div>
-      <button type="submit" class="submit-btn">Login</button>
-    </form>
-    <p>Login as Lecturer <a href="/t_login">Login</a></p>
-  </div>
-
-
-</body>
+    <link rel="stylesheet" href="/style.css" />
+    <script>
+      function updateFormAction() {
+        var rollNumber = document.getElementById("rollnumber").value
+        document.forms[0].action = "/home/" + rollNumber
+      }
+    </script>
+  </head>
+  <body>
+    <div action="/s-login" class="form-container">
+      <h2>Student Login</h2>
+      <form action="/login" method="post">
+        <div class="form-group">
+          <label for="name">Roll Number: </label>
+          <input
+            type="number"
+            id="rollnumber"
+            name="username"
+            placeholder="Enter your Roll Number"
+            required
+            autocomplete="off"
+          />
+        </div>
+        <div class="form-group">
+          <label for="password">Password:</label>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            placeholder="Password"
+            required
+          />
+        </div>
+        <button type="submit" class="submit-btn">Login</button>
+      </form>
+      <p><a href="/t_login">Are you a Lecturer?</a></p>
+    </div>
+  </body>
 </html>

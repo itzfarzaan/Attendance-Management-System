@@ -1,27 +1,38 @@
 /* Reset some default styles */
-body, h1, h2, h3, p, ul, li, table {
+body,
+h1,
+h2,
+h3,
+p,
+ul,
+li,
+table {
   margin: 0;
   padding: 0;
 }
 
 body {
   font-family: Arial, sans-serif;
+  background-color: #f7f7f7;
 }
 
 /* Navigation Bar Styles */
 .navbar {
   background-color: #333;
   color: #fff;
-  padding: 10px;
-  text-align: center;
+  padding: 10px 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-/* .navbar .logo {
-  /* Add your logo styling here */
-
+.navbar .logo img {
+  width: 80px; /* Adjust logo size */
+  border-radius: 50%;
+}
 
 .navbar .welcome-text {
-  font-size: 18px;
+  font-size: 25px;
 }
 
 /* Dashboard Container Styles */
@@ -31,73 +42,129 @@ body {
 
 /* Student Information Styles */
 .student-info {
-  background-color: #f0f0f0;
+  background-color: #fff;
   border: 1px solid #ccc;
   padding: 15px;
   margin-bottom: 20px;
+  display: flex;
+}
+
+.child {
+  width: 50%; /* Set width to 50% for each child */
+  box-sizing: border-box; /* Include padding and border in the width calculation */
+}
+
+.info {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  padding-left: 30px;
+  font-size: 120%;
 }
 
 .student-info h2 {
-  font-size: 20px;
+  font-size: 24px;
   margin-bottom: 10px;
+  color: #333;
 }
 
 .student-info p {
   margin-bottom: 5px;
+  color: #666;
 }
 
 /* Attendance Table Styles */
 .attendance-table {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 20px;
   margin-bottom: 20px;
 }
 
 .attendance-table h2 {
-  font-size: 18px;
-  margin-bottom: 10px;
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #333;
 }
 
 /* Table Styles */
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 10px;
 }
 
-table, th, td {
+table,
+th,
+td {
   border: 1px solid #ccc;
 }
 
-th, td {
+th,
+td {
   padding: 10px;
   text-align: left;
 }
 
+th {
+  background-color: #f0f0f0;
+  color: #333;
+}
 
+/* Hover effect for table rows */
+tr:hover {
+  background-color: #f5f5f5;
+}
 
+.attendance-banner {
+  padding: 10px;
+  color: #fff;
+  display: flex; /* Use flexbox layout */
+  justify-content: center; /* Horizontally center the content */
+  align-items: center; /* Vertically center the content */
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 0px;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  width: auto; /* Ensure the banner takes up the full width of its container */
+  overflow-x: hidden; /* Hide horizontal overflow */
+}
 
+#lowAttendanceBanner {
+  background-color: #ff3a3a; /* Red */
+}
 
+#highAttendanceBanner {
+  background-color: #55aa55; /* Green */
+}
 
+.attendance-banner p {
+  position: relative;
+  display: inline-block;
+  font-size: 25px; /* Adjust font size as needed */
+  white-space: nowrap;
+  animation: scrollBanner 9s linear infinite; /* Apply animation to the text */
+}
 
-
-
-
-
-
-
-
+@keyframes scrollBanner {
+  0% {
+    transform: translateX(180%);
+  }
+  100% {
+    transform: translateX(-180%);
+  }
+}
 
 .progress-ring-container {
   position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 500px; /* Adjust height as needed */
-  width:500 ;
-  background: radial-gradient(circle, #e0e0e0, #ffffff); /* Example gradient */
+  height: 250px; /* Adjust height as needed */
+  width: 500;
 }
-
-
-
 
 .progress-ring {
   position: relative;
@@ -106,22 +173,18 @@ th, td {
   display: flex;
   justify-content: center;
   align-items: center;
-  
 }
-
-
 
 .progress-ring-circle {
   height: 120px;
 
-  position:absolute;
+  position: absolute;
   fill: none;
   stroke: linear-gradient(to right, #6448e0, #007bff); /* Example gradient */
   stroke-width: 16; /* Width of the progress ring */
   stroke-linecap: round; /* Rounded line ends */
   transition: stroke-dashoffset 0.35s; /* Smooth transition effect */
 }
-
 
 .progress-ring-circle-bg {
   fill: none;
